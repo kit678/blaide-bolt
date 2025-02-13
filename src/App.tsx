@@ -68,10 +68,26 @@ function HomePage() {
     message: '',
     division: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Basic validation
+    if (!formData.name || !formData.email || !formData.message || !formData.division) {
+      toast.error('Please fill all fields');
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
       const { error } = await supabase
         .from('contact_messages')
@@ -85,10 +101,17 @@ function HomePage() {
       if (error) throw error;
       
       toast.success('Message sent successfully!');
-      setFormData({ name: '', email: '', message: '', division: '' });
+      setFormData({ 
+        name: '', 
+        email: '', 
+        message: '', 
+        division: '' 
+      });
     } catch (error) {
       console.error('Error sending message:', error);
       toast.error('Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -196,9 +219,12 @@ function HomePage() {
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-colors"
+              disabled={isSubmitting}
+              className={`w-full ${
+                isSubmitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+              } text-white font-bold py-3 px-8 rounded-full transition-colors`}
             >
-              Send Message
+              {isSubmitting ? 'Sending...' : 'Send Message'}
             </button>
           </form>
         </div>
