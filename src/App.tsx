@@ -61,7 +61,7 @@ function Navigation() {
   );
 }
 
-function HomePage() {
+function HomePage(): JSX.Element {
   const [selectedDivision, setSelectedDivision] = useState<Division | null>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -237,6 +237,7 @@ function HomePage() {
         />
       )}
     </>
+  );
   );
 }
 
