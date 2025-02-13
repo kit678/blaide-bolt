@@ -244,7 +244,7 @@ function HomePage(): JSX.Element {
       )}
     </>
   );
-  );
+
 }
 
 export default function App() {
