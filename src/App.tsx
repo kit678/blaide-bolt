@@ -9,7 +9,7 @@ import { divisions } from './data/divisions';
 import { Division } from './types/division';
 import { DivisionModal } from './components/DivisionModal';
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from './lib/supabase';
+import { db } from './lib/firestore';
 
 function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

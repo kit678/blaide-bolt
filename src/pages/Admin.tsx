@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { BlogPost } from '../types/blog';
 import { blogPosts } from '../data/blogPosts';
 import { Plus, Edit, Trash, Save, Mail, Check } from 'lucide-react';
+import { db } from '../lib/firestore';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 
