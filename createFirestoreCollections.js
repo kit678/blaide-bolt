@@ -23,7 +23,7 @@ async function createCollections() {
       email: 'sample@example.com',
       message: 'This is a sample message.',
       division: 'Sample Division',
-      created_at: new Date(), // Use Date object directly
+      created_at: new Date().toISOString(), // Ensure it's a string
       is_read: false,
     });
     console.log('contact_messages collection created with a sample document.');
