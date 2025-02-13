@@ -3,7 +3,6 @@ import { Navigate } from 'react-router-dom';
 import { BlogPost } from '../types/blog';
 import { blogPosts } from '../data/blogPosts';
 import { Plus, Edit, Trash, Save, Mail, Check } from 'lucide-react';
-import { db } from '../lib/supabase'; // Ensure this is the correct import for Firebase
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 
@@ -44,15 +43,15 @@ export function Admin() {
   };
 
   const fetchSettings = async () => {
-    const { data, error } = await supabase
-      .from('settings')
-      .select('contact_email')
-      .single();
-    
-    if (error) {
+    try {
+      const settingsRef = collection(db, 'settings');
+      const settingsSnapshot = await getDocs(settingsRef);
+      const settingsData = settingsSnapshot.docs.map(doc => doc.data());
+      if (settingsData.length > 0) {
+        setContactEmail(settingsData[0].contact_email);
+      }
+    } catch (error) {
       toast.error('Failed to load settings');
-    } else {
-      setContactEmail(data.contact_email);
     }
   };
 
@@ -70,15 +69,16 @@ export function Admin() {
   };
 
   const updateContactEmail = async () => {
-    const { error } = await supabase
-      .from('settings')
-      .update({ contact_email: contactEmail })
-      .eq('id', 1);
-    
-    if (error) {
+    try {
+      const settingsRef = collection(db, 'settings');
+      const settingsSnapshot = await getDocs(settingsRef);
+      if (!settingsSnapshot.empty) {
+        const settingsDoc = settingsSnapshot.docs[0];
+        await updateDoc(settingsDoc.ref, { contact_email: contactEmail });
+        toast.success('Contact email updated');
+      }
+    } catch (error) {
       toast.error('Failed to update contact email');
-    } else {
-      toast.success('Contact email updated');
     }
   };
 

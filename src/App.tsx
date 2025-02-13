@@ -8,7 +8,6 @@ import { Admin } from './pages/Admin';
 import { divisions } from './data/divisions';
 import { Division } from './types/division';
 import { DivisionModal } from './components/DivisionModal';
-import { db } from './lib/supabase';
 import { collection, addDoc } from 'firebase/firestore';
 
 function Navigation() {
