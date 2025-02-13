@@ -3,7 +3,8 @@ import { Navigate } from 'react-router-dom';
 import { BlogPost } from '../types/blog';
 import { blogPosts } from '../data/blogPosts';
 import { Plus, Edit, Trash, Save, Mail, Check } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { db } from '../lib/supabase';
+import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 
 interface ContactMessage {
@@ -33,15 +34,12 @@ export function Admin() {
   }, [isAuthenticated]);
 
   const fetchMessages = async () => {
-    const { data, error } = await supabase
-      .from('contact_messages')
-      .select('*')
-      .order('created_at', { ascending: false });
-    
-    if (error) {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'contact_messages'));
+      const messagesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setMessages(messagesData);
+    } catch (error) {
       toast.error('Failed to load messages');
-    } else {
-      setMessages(data);
     }
   };
 
@@ -59,18 +57,15 @@ export function Admin() {
   };
 
   const markAsRead = async (id: string) => {
-    const { error } = await supabase
-      .from('contact_messages')
-      .update({ is_read: true })
-      .eq('id', id);
-    
-    if (error) {
-      toast.error('Failed to mark message as read');
-    } else {
+    try {
+      const messageRef = doc(db, 'contact_messages', id);
+      await updateDoc(messageRef, { is_read: true });
       setMessages(messages.map(msg => 
         msg.id === id ? { ...msg, is_read: true } : msg
       ));
       toast.success('Message marked as read');
+    } catch (error) {
+      toast.error('Failed to mark message as read');
     }
   };
 

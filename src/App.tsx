@@ -8,7 +8,8 @@ import { Admin } from './pages/Admin';
 import { divisions } from './data/divisions';
 import { Division } from './types/division';
 import { DivisionModal } from './components/DivisionModal';
-import { supabase } from './lib/supabase';
+import { db } from './lib/supabase';
+import { collection, addDoc } from 'firebase/firestore';
 
 function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -89,16 +90,15 @@ function HomePage() {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
-        .from('contact_messages')
-        .insert([{
+      try {
+        await addDoc(collection(db, 'contact_messages'), {
           name: formData.name,
           email: formData.email,
           message: formData.message,
-          division: formData.division
-        }]);
-
-      if (error) throw error;
+          division: formData.division,
+          created_at: new Date().toISOString(),
+          is_read: false,
+        });
       
       toast.success('Message sent successfully!');
       setFormData({ 
