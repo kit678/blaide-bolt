@@ -15,13 +15,9 @@ export function Blog() {
 
   const fetchPosts = async () => {
     try {
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setPosts(data);
+      const querySnapshot = await getDocs(collection(db, 'blog_posts'));
+      const postsData = querySnapshot.docs.map(doc => doc.data());
+      setPosts(postsData);
     } catch (error) {
       console.error('Error fetching posts:', error);
       toast.error('Failed to load blog posts');
