@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BlogCard } from '../components/BlogCard';
 import { BlogPost } from '../types/blog';
-import { supabase } from '../lib/supabase';
+import { db } from '../lib/supabase';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
 
