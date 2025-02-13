@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, getDocs } from 'firebase/firestore';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -17,22 +17,34 @@ const db = getFirestore(app);
 
 async function createCollections() {
   try {
-    // Create contact_messages collection with a sample document
-    await addDoc(collection(db, 'contact_messages'), {
-      name: 'Sample Name',
-      email: 'sample@example.com',
-      message: 'This is a sample message.',
-      division: 'Sample Division',
-      created_at: new Date(), // Use Date object directly
-      is_read: false,
-    });
-    console.log('contact_messages collection created with a sample document.');
+    // Check if contact_messages collection exists
+    const contactMessagesRef = collection(db, 'contact_messages');
+    const contactMessagesSnapshot = await getDocs(contactMessagesRef);
+    if (contactMessagesSnapshot.empty) {
+      await addDoc(contactMessagesRef, {
+        name: 'Sample Name',
+        email: 'sample@example.com',
+        message: 'This is a sample message.',
+        division: 'Sample Division',
+        created_at: new Date(),
+        is_read: false,
+      });
+      console.log('contact_messages collection created with a sample document.');
+    } else {
+      console.log('contact_messages collection already exists.');
+    }
 
-    // Create settings collection with a sample document
-    await addDoc(collection(db, 'settings'), {
-      contact_email: 'contact@example.com',
-    });
-    console.log('settings collection created with a sample document.');
+    // Check if settings collection exists
+    const settingsRef = collection(db, 'settings');
+    const settingsSnapshot = await getDocs(settingsRef);
+    if (settingsSnapshot.empty) {
+      await addDoc(settingsRef, {
+        contact_email: 'contact@example.com',
+      });
+      console.log('settings collection created with a sample document.');
+    } else {
+      console.log('settings collection already exists.');
+    }
   } catch (error) {
     console.error('Error creating collections:', error);
   }
