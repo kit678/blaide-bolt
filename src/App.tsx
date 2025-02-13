@@ -100,13 +100,19 @@ function HomePage(): JSX.Element {
           is_read: false,
         });
       
-      toast.success('Message sent successfully!');
-      setFormData({ 
-        name: '', 
-        email: '', 
-        message: '', 
-        division: '' 
-      });
+        toast.success('Message sent successfully!');
+        setFormData({ 
+          name: '', 
+          email: '', 
+          message: '', 
+          division: '' 
+        });
+      } catch (error) {
+        console.error('Error sending message:', error);
+        toast.error('Failed to send message. Please try again.');
+      } finally {
+        setIsSubmitting(false);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       toast.error('Failed to send message. Please try again.');
@@ -237,6 +243,7 @@ function HomePage(): JSX.Element {
         />
       )}
     </>
+  );
   );
   );
 }
