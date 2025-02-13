@@ -1,5 +1,25 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, getDocs } from 'firebase/firestore';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
+// Validate environment variables
+const requiredEnvVars = [
+  'VITE_FIREBASE_API_KEY',
+  'VITE_FIREBASE_AUTH_DOMAIN',
+  'VITE_FIREBASE_PROJECT_ID',
+  'VITE_FIREBASE_STORAGE_BUCKET',
+  'VITE_FIREBASE_MESSAGING_SENDER_ID',
+  'VITE_FIREBASE_APP_ID'
+];
+
+requiredEnvVars.forEach(varName => {
+  if (!process.env[varName]) {
+    throw new Error(`Missing environment variable: ${varName}`);
+  }
+});
 
 // Firebase configuration
 const firebaseConfig = {
@@ -17,9 +37,10 @@ const db = getFirestore(app);
 
 async function createCollections() {
   try {
-    // Check if contact_messages collection exists
+    // Create contact_messages collection with sample document
     const contactMessagesRef = collection(db, 'contact_messages');
     const contactMessagesSnapshot = await getDocs(contactMessagesRef);
+    
     if (contactMessagesSnapshot.empty) {
       await addDoc(contactMessagesRef, {
         name: 'Sample Name',
@@ -29,24 +50,24 @@ async function createCollections() {
         created_at: new Date(),
         is_read: false,
       });
-      console.log('contact_messages collection created with a sample document.');
-    } else {
-      console.log('contact_messages collection already exists.');
+      console.log('Added sample document to contact_messages collection');
     }
 
-    // Check if settings collection exists
+    // Create settings collection with sample document
     const settingsRef = collection(db, 'settings');
     const settingsSnapshot = await getDocs(settingsRef);
+    
     if (settingsSnapshot.empty) {
       await addDoc(settingsRef, {
         contact_email: 'contact@example.com',
       });
-      console.log('settings collection created with a sample document.');
-    } else {
-      console.log('settings collection already exists.');
+      console.log('Added sample document to settings collection');
     }
+
+    console.log('Firestore initialization completed successfully');
   } catch (error) {
-    console.error('Error creating collections:', error);
+    console.error('Firestore initialization failed:', error);
+    process.exit(1);
   }
 }
 
