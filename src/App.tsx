@@ -9,6 +9,7 @@ import { divisions } from './data/divisions';
 import { Division } from './types/division';
 import { DivisionModal } from './components/DivisionModal';
 import { collection, addDoc } from 'firebase/firestore';
+import { db } from './lib/supabase';
 
 function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -242,7 +243,6 @@ function HomePage(): JSX.Element {
         />
       )}
     </>
-  );
   );
   );
 }
