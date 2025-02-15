@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
   apiServer.use(express.json());
 
   // Import and use our API endpoint
-  import { POST } from './src/api/sendEmail';
+  const { POST } = require('./src/api/sendEmail');
   apiServer.post('/api/sendEmail', (req, res) => POST(req, res, env.VITE_RESEND_API_KEY));
 
   return {
