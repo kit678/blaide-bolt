@@ -56,9 +56,9 @@ export default defineConfig(({ mode }) => {
           }
         },
       },
-      middlewareMode: true,
+      middlewareMode: 'html',
       configureServer(server) {
-        server.middlewares.use('/api', apiServer);
+        server.middlewares.use(apiServer);
       }
     },
     optimizeDeps: {
