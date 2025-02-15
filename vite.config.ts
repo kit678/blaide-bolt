@@ -15,7 +15,10 @@ export default defineConfig(({ mode }) => {
   const { POST } = require('./src/api/sendEmail');
   apiServer.post('/api/sendEmail', (req, res) => POST(req, res, env.VITE_RESEND_API_KEY));
 
-  return {
+  // Start the Express server on port 3000
+  apiServer.listen(3000, () => {
+    console.log('API server running on http://localhost:3000');
+  });
     plugins: [
       react(),
       VitePWA({
@@ -46,7 +49,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: 'http://localhost:3000',
+          target: 'http://localhost:3000', // Ensure this matches the Express server port
           changeOrigin: true,
           secure: false,
           configure: (proxy) => {
