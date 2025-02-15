@@ -15,7 +15,8 @@ export default defineConfig(({ mode }) => {
   const { POST } = require('./src/api/sendEmail');
   apiServer.post('/api/sendEmail', (req, res) => POST(req, res, env.VITE_RESEND_API_KEY));
 
-  plugins: [
+  return {
+    plugins: [
       react(),
       VitePWA({
         registerType: 'autoUpdate',
@@ -55,6 +56,7 @@ export default defineConfig(({ mode }) => {
           }
         },
       },
+    },
     },
     optimizeDeps: {
       exclude: ['lucide-react']
