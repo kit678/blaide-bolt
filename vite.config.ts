@@ -15,11 +15,7 @@ export default defineConfig(({ mode }) => {
   const { POST } = require('./src/api/sendEmail');
   apiServer.post('/api/sendEmail', (req, res) => POST(req, res, env.VITE_RESEND_API_KEY));
 
-  // Start the Express server on port 3000
-  apiServer.listen(3000, () => {
-    console.log('API server running on http://localhost:3000');
-  });
-    plugins: [
+  plugins: [
       react(),
       VitePWA({
         registerType: 'autoUpdate',
@@ -59,10 +55,6 @@ export default defineConfig(({ mode }) => {
           }
         },
       },
-      middlewareMode: 'html',
-      configureServer(server) {
-        server.middlewares.use(apiServer);
-      }
     },
     optimizeDeps: {
       exclude: ['lucide-react']
