@@ -1,5 +1,5 @@
 import express from 'express';
-import { POST } from './src/api/sendEmail';
+import { POST } from './api/sendEmail';
 import { loadEnv } from 'vite';
 
 const app = express();
