@@ -9,7 +9,7 @@ interface EmailData {
 
 export async function sendEmail(data: EmailData) {
   try {
-    const response = await fetch('/api/sendEmail', {
+    const response = await fetch('http://localhost:3001/sendEmail', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
