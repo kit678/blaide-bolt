@@ -2,18 +2,16 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import express from 'express';
+import { ViteDevServer } from 'vite';
 
 export default defineConfig(({ mode }) => {
-  // Load environment variables
-  const env = loadEnv(mode, process.cwd(), '');
+  const env = loadEnv(mode, process.cwd(), 'VITE_');
 
-  // Create an Express server
   const apiServer = express();
   apiServer.use(express.json());
 
-  // Import and use our API endpoint
   const { POST } = require('./src/api/sendEmail');
-  apiServer.post('/api/sendEmail', (req, res) => POST(req, res, env.VITE_RESEND_API_KEY));
+  apiServer.post('/sendEmail', (req, res) => POST(req, res, env.VITE_RESEND_API_KEY));
 
   return {
     plugins: [
@@ -21,6 +19,7 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+        strategies: 'injectManifest',
         manifest: {
           name: 'Blaide - AI-Driven Innovation',
           short_name: 'Blaide',
@@ -40,23 +39,23 @@ export default defineConfig(({ mode }) => {
               type: 'image/png'
             }
           ]
+        },
+        workbox: {
+          swSrc: 'public/sw.js',
+          swDest: 'dist/sw.js',
+          mode: 'module',
+          globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+          dontCacheBustURLsMatching: /.*/,
+          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
         }
       })
     ],
     server: {
-      proxy: {
-        '/api': {
-          target: 'http://localhost:3000', // Ensure this matches the Express server port
-          changeOrigin: true,
-          secure: false,
-          configure: (proxy) => {
-            proxy.on('error', (err) => {
-              console.error('Proxy error:', err);
-            });
-          }
-        },
-      },
-    },
+      port: 5173,
+      strictPort: true,
+      configureServer(server: ViteDevServer) {
+        server.middlewares.use('/api', apiServer);
+      }
     },
     optimizeDeps: {
       exclude: ['lucide-react']
