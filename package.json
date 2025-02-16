@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "migrate": "supabase db push",
-    "server": "ts-node --loader ts-node/esm src/testServer.ts"
+    "server": "ts-node-esm src/testServer.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",
