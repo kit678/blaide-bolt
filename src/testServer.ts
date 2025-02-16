@@ -1,9 +1,11 @@
 import express from 'express';
+import cors from 'cors';
 import { POST } from './api/sendEmail';
 import { loadEnv } from 'vite';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const env = loadEnv('development', process.cwd(), 'VITE_');
 
