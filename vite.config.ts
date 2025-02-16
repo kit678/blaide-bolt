@@ -41,7 +41,7 @@ export default defineConfig(({ mode }) => {
           ]
         },
         workbox: {
-          src: 'public/sw.js',
+          swSrc: 'public/sw.js',
           swDest: 'dist/sw.js',
           mode: 'module',
           globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
