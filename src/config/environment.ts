@@ -1,4 +1,4 @@
-import { getEnv, getMode } from '../utils/env.ts';
+import { getEnv, getMode } from '../utils/env.js';
 
 function buildConfig() {
   const isDev = getMode() !== 'production';
