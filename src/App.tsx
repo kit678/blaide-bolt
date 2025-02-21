@@ -9,6 +9,7 @@ import { divisions } from './data/divisions';
 import { Division } from './types/division';
 import { DivisionModal } from './components/DivisionModal';
 import { sendEmail } from './lib/email';
+import { getEnvironmentConfig } from './config/environment';
 
 function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -73,7 +74,8 @@ function HomePage(): JSX.Element {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    const config = getEnvironmentConfig();
+
     // Basic validation
     if (!formData.name || !formData.email || !formData.message) {
       toast.error('Please fill all required fields');
@@ -91,7 +93,7 @@ function HomePage(): JSX.Element {
 
     try {
       await sendEmail({
-        to: import.meta.env.VITE_CONTACT_EMAIL,
+        to: config.emailService.adminEmail,
         from_name: formData.name,
         from_email: formData.email,
         subject: `New message from ${formData.name}`,
@@ -101,13 +103,12 @@ function HomePage(): JSX.Element {
       });
 
       toast.success('Message sent successfully!');
-      // Fix: Include phone field when resetting form
       setFormData({ 
         name: '', 
         email: '', 
         message: '', 
         division: '',
-        phone: ''  // Add this line
+        phone: '' 
       });
     } catch (error) {
       console.error('Error:', error);

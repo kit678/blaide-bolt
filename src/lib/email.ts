@@ -1,4 +1,4 @@
-import { config } from '../config/environment';
+import { getEnvironmentConfig } from '../config/environment';
 
 interface EmailData {
   to: string;
@@ -11,6 +11,7 @@ interface EmailData {
 }
 
 export async function sendEmail(data: EmailData) {
+  const config = getEnvironmentConfig();
   try {
     const response = await fetch(`${config.apiBaseUrl}/sendEmail`, {
       method: 'POST',

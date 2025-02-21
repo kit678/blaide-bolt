@@ -11,5 +11,11 @@ interface ImportMetaEnv {
 }
 
 interface ImportMeta {
-  readonly env: ImportMetaEnv;
+  readonly env: ImportMetaEnv & {
+    MODE: string;
+    VITE_CONTACT_EMAIL?: string;
+    VITE_RESEND_API_KEY?: string;
+    VITE_API_BASE_URL?: string;
+    // Add other environment variables here
+  };
 }

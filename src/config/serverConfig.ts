@@ -1,10 +1,13 @@
 import dotenv from 'dotenv';
+import { getEnvironmentConfig } from './environment';
 dotenv.config();
+
+const config = getEnvironmentConfig();
 
 export const serverConfig = {
   port: 3001,
   emailService: {
-    adminEmail: process.env.VITE_CONTACT_EMAIL,
-    resendApiKey: process.env.VITE_RESEND_API_KEY
+    adminEmail: config.emailService.adminEmail,
+    resendApiKey: config.emailService.resendApiKey
   }
 };

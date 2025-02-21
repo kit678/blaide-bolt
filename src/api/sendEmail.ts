@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 import { type Request, type Response } from 'express';
-import { config } from '../config/environment';
+import { getEnvironmentConfig } from '../config/environment';
 
 type EmailRequestBody = {
   to: string;
@@ -13,6 +13,7 @@ type EmailRequestBody = {
 };
 
 export async function POST(req: Request, res: Response, apiKey: string) {
+  const config = getEnvironmentConfig();
   try {
     const resend = new Resend(apiKey);
     const body = req.body as EmailRequestBody;

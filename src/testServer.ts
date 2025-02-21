@@ -4,6 +4,7 @@ import { POST } from './api/sendEmail.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getEnvironmentConfig } from './config/environment';
 
 // Convert import.meta.url to __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -19,12 +20,13 @@ app.use(cors());
 app.use(express.json());
 
 app.post('/sendEmail', async (_req, res) => {
-  const apiKey = process.env.VITE_RESEND_API_KEY;
+  const config = getEnvironmentConfig();
+  const apiKey = config.emailService.resendApiKey;
   if (!apiKey) {
     return res.status(500).json({ error: 'Resend API key not configured' });
   }
   try {
-    _req.body.to = process.env.VITE_CONTACT_EMAIL;
+    _req.body.to = config.emailService.adminEmail;
     await POST(_req, res, apiKey);
   } catch (error) {
     console.error('Email error:', error);

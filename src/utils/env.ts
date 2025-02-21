@@ -1,12 +1,10 @@
-export function getEnv(key: string, defaultValue?: string): string {
-  // Try to get the environment variable from Vite's import.meta.env
-  if (typeof import.meta !== 'undefined' && import.meta.env) {
-    return import.meta.env[key] || defaultValue || '';
+export const getEnv = (key: string): string => {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`Environment variable ${key} is not defined`);
   }
-
-  // Fallback to Node.js process.env
-  return process.env[key] || defaultValue || '';
-}
+  return value;
+};
 
 export function getMode(): string {
   // Try to get the mode from Vite's import.meta.env

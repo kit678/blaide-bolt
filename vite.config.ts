@@ -7,21 +7,30 @@ import type { ViteDevServer } from 'vite';
 import type { IncomingMessage, ServerResponse } from 'http';
 import type { NextFunction } from 'express';
 import { POST as sendEmailPOST } from './src/api/sendEmail.js';
+import dotenv from 'dotenv';
+import { getEnvironmentConfig } from './src/config/environment.ts';
 
 export default defineConfig(({ mode }) => {
+  if (mode === 'production') {
+    dotenv.config({ path: '.env.production' });
+  }
+
   const env = loadEnv(mode, process.cwd(), '');
+  Object.assign(process.env, env);
+
+  const config = getEnvironmentConfig();
 
   const apiServer = express();
   apiServer.use(cors());
   apiServer.use(express.json());
 
   apiServer.post('/api/sendEmail', async (req, res) => {
-    const apiKey = env.VITE_RESEND_API_KEY;
+    const apiKey = config.emailService.resendApiKey;
     if (!apiKey) {
       return res.status(500).json({ error: 'Resend API key not configured' });
     }
     try {
-      req.body.to = env.VITE_CONTACT_EMAIL;
+      req.body.to = config.emailService.adminEmail;
       await sendEmailPOST(req, res, apiKey);
     } catch (error) {
       console.error('Email error:', error);
