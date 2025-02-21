@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "target": "ESNext",
     "strict": true,
     "esModuleInterop": true,
@@ -21,7 +21,7 @@
   },
   "include": [
     "vite.config.ts",
-    "src/api/sendEmail.ts",
+    "api/sendEmail.ts",
     "src/testServer.ts",
     "src/utils/env.ts"
   ]

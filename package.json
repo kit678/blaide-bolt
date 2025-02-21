@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "migrate": "supabase db push",
-    "server": "tsx src/testServer.ts"
+    "server": "tsx src/testServer.ts",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",
@@ -49,5 +50,8 @@
     "typescript": "^5.7.3",
     "vite": "^5.4.2",
     "vite-plugin-pwa": "^0.19.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
