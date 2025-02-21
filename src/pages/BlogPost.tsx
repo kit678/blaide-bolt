@@ -3,7 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ArrowLeft, Clock, Tag } from 'lucide-react';
 import { BlogPost as BlogPostType } from '../types/blog';
-import { supabase } from '../lib/supabase';
+import { db } from '../lib/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
 
@@ -20,14 +21,16 @@ export function BlogPost() {
 
   const fetchPost = async (postId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .eq('id', postId)
-        .single();
+      const postsRef = collection(db, 'blog_posts');
+      const q = query(postsRef, where('id', '==', postId));
+      const querySnapshot = await getDocs(q);
 
-      if (error) throw error;
-      setPost(data);
+      if (querySnapshot.empty) {
+        throw new Error('Post not found');
+      }
+
+      const postData = querySnapshot.docs[0].data();
+      setPost(postData);
     } catch (error) {
       console.error('Error fetching post:', error);
       toast.error('Failed to load blog post');

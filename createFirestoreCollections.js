@@ -53,17 +53,6 @@ async function createCollections() {
       console.log('Added sample document to contact_messages collection');
     }
 
-    // Create settings collection with sample document
-    const settingsRef = collection(db, 'settings');
-    const settingsSnapshot = await getDocs(settingsRef);
-    
-    if (settingsSnapshot.empty) {
-      await addDoc(settingsRef, {
-        contact_email: 'contact@example.com',
-      });
-      console.log('Added sample document to settings collection');
-    }
-
     console.log('Firestore initialization completed successfully');
   } catch (error) {
     console.error('Firestore initialization failed:', error);

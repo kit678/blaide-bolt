@@ -1,3 +1,5 @@
+import { config } from '../config/environment';
+
 interface EmailData {
   to: string;
   from_name: string;
@@ -5,13 +7,17 @@ interface EmailData {
   subject: string;
   message: string;
   division: string;
+  phone?: string;
 }
 
 export async function sendEmail(data: EmailData) {
   try {
-    const response = await fetch('http://localhost:3001/sendEmail', {
+    const response = await fetch(`${config.apiBaseUrl}/sendEmail`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       body: JSON.stringify(data),
     });
 

@@ -8,8 +8,7 @@ import { Admin } from './pages/Admin';
 import { divisions } from './data/divisions';
 import { Division } from './types/division';
 import { DivisionModal } from './components/DivisionModal';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from './lib/firestore';
+import { sendEmail } from './lib/email';
 
 function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -66,6 +65,7 @@ function HomePage(): JSX.Element {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',  // Add phone field
     message: '',
     division: '',
   });
@@ -75,8 +75,8 @@ function HomePage(): JSX.Element {
     e.preventDefault();
     
     // Basic validation
-    if (!formData.name || !formData.email || !formData.message || !formData.division) {
-      toast.error('Please fill all fields');
+    if (!formData.name || !formData.email || !formData.message) {
+      toast.error('Please fill all required fields');
       return;
     }
 
@@ -90,32 +90,40 @@ function HomePage(): JSX.Element {
     setIsSubmitting(true);
 
     try {
-      try {
-        await addDoc(collection(db, 'contact_messages'), {
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          division: formData.division,
-          created_at: new Date().toISOString(),
-          is_read: false,
-        });
-      
-        toast.success('Message sent successfully!');
-        setFormData({ 
-          name: '', 
-          email: '', 
-          message: '', 
-          division: '' 
-        });
-      } catch (error) {
-        console.error('Error sending message:', error);
-        toast.error('Failed to send message. Please try again.');
-      } finally {
-        setIsSubmitting(false);
-      }
+      await sendEmail({
+        to: import.meta.env.VITE_CONTACT_EMAIL,
+        from_name: formData.name,
+        from_email: formData.email,
+        subject: `New message from ${formData.name}`,
+        message: formData.message,
+        division: formData.division,
+        phone: formData.phone
+      });
+
+      toast.success('Message sent successfully!');
+      // Fix: Include phone field when resetting form
+      setFormData({ 
+        name: '', 
+        email: '', 
+        message: '', 
+        division: '',
+        phone: ''  // Add this line
+      });
     } catch (error) {
-      console.error('Error sending message:', error);
-      toast.error('Failed to send message. Please try again.');
+      console.error('Error:', error);
+      if (error instanceof Error) {
+        if (error.message.includes('No contact email configured')) {
+          toast.error('Contact email not configured. Please try again later.');
+        } else if (error.message.includes('Unauthorized')) {
+          toast.error('Email service configuration error. Please try again later.');
+        } else if (error.message.includes('domain not verified')) {
+          toast.error('Email service configuration error. Please try again later.');
+        } else {
+          toast.error('Failed to send message. Please try again.');
+        }
+      } else {
+        toast.error('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -192,6 +200,18 @@ function HomePage(): JSX.Element {
                 className="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-white"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              />
+            </div>
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium mb-2 text-white">
+                Phone Number (Optional)
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                className="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-white"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               />
             </div>
             <div>

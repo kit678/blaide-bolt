@@ -4,6 +4,7 @@ import { BlogPost } from '../types/blog';
 import { db } from '../lib/firestore';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
+import { collection, getDocs } from 'firebase/firestore';
 
 export function Blog() {
   const [posts, setPosts] = useState<BlogPost[]>([]);

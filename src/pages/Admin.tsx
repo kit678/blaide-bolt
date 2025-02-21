@@ -4,7 +4,7 @@ import { BlogPost } from '../types/blog';
 import { blogPosts } from '../data/blogPosts';
 import { Plus, Edit, Trash, Save, Mail, Check } from 'lucide-react';
 import { db } from '../lib/firestore';
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, updateDoc, doc, addDoc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 
 interface ContactMessage {
@@ -22,14 +22,13 @@ export function Admin() {
   const [password, setPassword] = useState('');
   const [posts, setPosts] = useState<BlogPost[]>(blogPosts);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
-  const [contactEmail, setContactEmail] = useState('');
+  const [contactEmail, setContactEmail] = useState(import.meta.env.VITE_CONTACT_EMAIL);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [activeTab, setActiveTab] = useState<'blog' | 'messages' | 'settings'>('blog');
 
   useEffect(() => {
     if (isAuthenticated) {
       fetchMessages();
-      fetchSettings();
     }
   }, [isAuthenticated]);
 
@@ -43,19 +42,6 @@ export function Admin() {
     }
   };
 
-  const fetchSettings = async () => {
-    try {
-      const settingsRef = collection(db, 'settings');
-      const settingsSnapshot = await getDocs(settingsRef);
-      const settingsData = settingsSnapshot.docs.map(doc => doc.data());
-      if (settingsData.length > 0) {
-        setContactEmail(settingsData[0].contact_email);
-      }
-    } catch (error) {
-      toast.error('Failed to load settings');
-    }
-  };
-
   const markAsRead = async (id: string) => {
     try {
       const messageRef = doc(db, 'contact_messages', id);
@@ -66,20 +52,6 @@ export function Admin() {
       toast.success('Message marked as read');
     } catch (error) {
       toast.error('Failed to mark message as read');
-    }
-  };
-
-  const updateContactEmail = async () => {
-    try {
-      const settingsRef = collection(db, 'settings');
-      const settingsSnapshot = await getDocs(settingsRef);
-      if (!settingsSnapshot.empty) {
-        const settingsDoc = settingsSnapshot.docs[0];
-        await updateDoc(settingsDoc.ref, { contact_email: contactEmail });
-        toast.success('Contact email updated');
-      }
-    } catch (error) {
-      toast.error('Failed to update contact email');
     }
   };
 
@@ -230,17 +202,9 @@ export function Admin() {
                   <input
                     type="email"
                     value={contactEmail}
-                    onChange={(e) => setContactEmail(e.target.value)}
-                    className="flex-1 px-4 py-2 rounded-md bg-gray-700 border border-gray-600 text-white"
-                    placeholder="Email address for contact form submissions"
+                    readOnly
+                    className="flex-1 px-4 py-2 rounded-md bg-gray-700 border border-gray-600 text-gray-400 cursor-not-allowed"
                   />
-                  <button
-                    onClick={updateContactEmail}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md inline-flex items-center"
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </button>
                 </div>
               </div>
             </div>

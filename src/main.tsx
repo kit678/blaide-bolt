@@ -4,16 +4,17 @@ import App from './App.tsx';
 import './index.css';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
-// Register service worker
-if ('serviceWorker' in navigator) {
+// Service worker registration with proper configuration
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js', { scope: '/' })
-      .then(registration => {
-        console.log('SW registered:', registration);
-      })
-      .catch(error => {
-        console.log('SW registration failed:', error);
-      });
+    navigator.serviceWorker.register('/sw.js', {
+      scope: '/',
+      type: 'module' // Must match workbox mode
+    }).then(registration => {
+      console.log('SW registered:', registration);
+    }).catch(error => {
+      console.error('SW registration failed:', error);
+    });
   });
 }
 

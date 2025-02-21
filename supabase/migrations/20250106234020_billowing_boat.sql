@@ -21,26 +21,26 @@
 */
 
 -- Settings table
-CREATE TABLE settings (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  contact_email text NOT NULL,
-  updated_at timestamptz DEFAULT now()
-);
+-- CREATE TABLE settings (
+--   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+--   contact_email text NOT NULL,
+--   updated_at timestamptz DEFAULT now()
+-- );
 
-ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
+-- ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow authenticated users to read settings"
-  ON settings
-  FOR SELECT
-  TO authenticated
-  USING (true);
+-- CREATE POLICY "Allow authenticated users to read settings"
+--   ON settings
+--   FOR SELECT
+--   TO authenticated
+--   USING (true);
 
-CREATE POLICY "Allow authenticated users to update settings"
-  ON settings
-  FOR UPDATE
-  TO authenticated
-  USING (true)
-  WITH CHECK (true);
+-- CREATE POLICY "Allow authenticated users to update settings"
+--   ON settings
+--   FOR UPDATE
+--   TO authenticated
+--   USING (true)
+--   WITH CHECK (true);
 
 -- Contact messages table
 CREATE TABLE contact_messages (
@@ -67,6 +67,4 @@ CREATE POLICY "Allow public to insert contact messages"
   TO anon
   WITH CHECK (true);
 
--- Insert default settings
-INSERT INTO settings (contact_email)
-VALUES ('admin@blaide.com');
+-- Remove the default settings insert
