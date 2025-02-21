@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 import { type Request, type Response } from 'express';
-import { getEnvironmentConfig } from '../config/environment';
+import { getEnvironmentConfig } from '../config/environment.ts';
 
 type EmailRequestBody = {
   to: string;
