@@ -12,12 +12,12 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "api/(.*)",
       "dest": "api/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "dist/index.html"
+      "dest": "index.html"
     }
   ],
   "env": {
