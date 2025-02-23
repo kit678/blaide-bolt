@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
-import { getEnvironmentConfig } from '../src/config/environment.js';
+import { getEnvironmentConfig } from '../src/config/environment.ts';
 
 type EmailRequestBody = {
   to: string;
