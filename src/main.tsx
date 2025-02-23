@@ -1,7 +1,7 @@
 import React from 'react';
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import { registerSW } from 'virtual:pwa-register';
 import './index.css';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { getMode } from './utils/env';
@@ -20,10 +20,13 @@ if ('serviceWorker' in navigator && getMode() === 'production') {
   });
 }
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
     <ErrorBoundary>
       <App />
     </ErrorBoundary>
-  </StrictMode>
+  </React.StrictMode>
 );
+
+// Register the Service Worker
+registerSW();
