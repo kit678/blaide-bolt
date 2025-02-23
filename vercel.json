@@ -1,12 +1,15 @@
 {
-  "build": {
-    "env": {
-      "NODE_ENV": "development"
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/api/*.ts",
+      "use": "@vercel/node"
     }
-  },
-  "functions": {
-    "api/sendEmail.vercel.ts": {
-      "runtime": "nodejs18.x"
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/api/$1"
     }
-  }
+  ]
 } 
