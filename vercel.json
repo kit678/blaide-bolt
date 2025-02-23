@@ -14,20 +14,7 @@
     {
       "src": "/api/(.*)",
       "dest": "api/$1"
-    },
-    {
-      "src": "/sw.js",
-      "dest": "/dist/sw.js"
-    },
-    {
-      "src": "/workbox-(.*).js",
-      "dest": "/dist/workbox-$1.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/dist/index.html"
-    }
-  ],
+    }],
   "env": {
     "NODE_ENV": "production"
   }
