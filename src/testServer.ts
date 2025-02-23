@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import { POST } from './api/sendEmail.js';
+import { POST as sendEmailPOST } from './api/sendEmail.local.ts';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getEnvironmentConfig } from './config/environment';
+import { getEnvironmentConfig } from './config/environment.ts';
 
 // Convert import.meta.url to __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -27,7 +27,7 @@ app.post('/sendEmail', async (_req, res) => {
   }
   try {
     _req.body.to = config.emailService.adminEmail;
-    await POST(_req, res, apiKey);
+    await sendEmailPOST(_req, res, apiKey);
   } catch (error) {
     console.error('Email error:', error);
     res.status(500).json({ error: 'Failed to send email' });

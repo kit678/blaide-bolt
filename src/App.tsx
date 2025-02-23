@@ -10,6 +10,7 @@ import { Division } from './types/division';
 import { DivisionModal } from './components/DivisionModal';
 import { sendEmail } from './lib/email';
 import { getEnvironmentConfig } from './config/environment';
+import { addContactMessage } from './services/firestore';
 
 function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -66,7 +67,7 @@ function HomePage(): JSX.Element {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '',  // Add phone field
+    phone: '',
     message: '',
     division: '',
   });
@@ -92,6 +93,18 @@ function HomePage(): JSX.Element {
     setIsSubmitting(true);
 
     try {
+      // Update Firestore
+      await addContactMessage({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || null,
+        division: formData.division,
+        message: formData.message,
+        created_at: new Date(),
+        is_read: false
+      });
+
+      // Send email through API
       await sendEmail({
         to: config.emailService.adminEmail,
         from_name: formData.name,
@@ -99,7 +112,7 @@ function HomePage(): JSX.Element {
         subject: `New message from ${formData.name}`,
         message: formData.message,
         division: formData.division,
-        phone: formData.phone
+        phone: formData.phone || undefined
       });
 
       toast.success('Message sent successfully!');
@@ -112,19 +125,7 @@ function HomePage(): JSX.Element {
       });
     } catch (error) {
       console.error('Error:', error);
-      if (error instanceof Error) {
-        if (error.message.includes('No contact email configured')) {
-          toast.error('Contact email not configured. Please try again later.');
-        } else if (error.message.includes('Unauthorized')) {
-          toast.error('Email service configuration error. Please try again later.');
-        } else if (error.message.includes('domain not verified')) {
-          toast.error('Email service configuration error. Please try again later.');
-        } else {
-          toast.error('Failed to send message. Please try again.');
-        }
-      } else {
-        toast.error('An unexpected error occurred. Please try again.');
-      }
+      toast.error('Failed to send message. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -265,7 +266,6 @@ function HomePage(): JSX.Element {
       )}
     </>
   );
-
 }
 
 export default function App() {

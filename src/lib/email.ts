@@ -1,4 +1,4 @@
-import { getEnvironmentConfig } from '../config/environment';
+import { getEnvironmentConfig } from '../config/environment.ts';
 
 interface EmailData {
   to: string;

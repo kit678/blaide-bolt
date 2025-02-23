@@ -6,7 +6,7 @@ import cors from 'cors';
 import type { ViteDevServer } from 'vite';
 import type { IncomingMessage, ServerResponse } from 'http';
 import type { NextFunction } from 'express';
-import { POST as sendEmailPOST } from './src/api/sendEmail.js';
+import { POST as sendEmailPOST } from './src/api/sendEmail.local.ts';
 import dotenv from 'dotenv';
 import { getEnvironmentConfig } from './src/config/environment.ts';
 

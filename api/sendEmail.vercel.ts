@@ -1,6 +1,6 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
-import { type Request, type Response } from 'express';
-import { getEnvironmentConfig } from '../config/environment.ts';
+import { getEnvironmentConfig } from '../src/config/environment.js';
 
 type EmailRequestBody = {
   to: string;
@@ -12,16 +12,25 @@ type EmailRequestBody = {
   phone?: string;
 };
 
-export async function POST(req: Request, res: Response, apiKey: string) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   const config = getEnvironmentConfig();
+  const apiKey = config.emailService.resendApiKey;
+
+  if (!apiKey) {
+    return res.status(500).json({ error: 'Resend API key not configured' });
+  }
+
   try {
     const resend = new Resend(apiKey);
     const body = req.body as EmailRequestBody;
 
+    // Skip Firestore update in Vercel environment
+    console.log('Skipping Firestore update in Vercel environment');
+
     // Send email to admin
     const { data: adminEmailData, error: adminEmailError } = await resend.emails.send({
       from: config.emailService.from,
-      to: body.to,
+      to: config.emailService.adminEmail,
       reply_to: body.from_email,
       subject: `New Contact Form Submission: ${body.subject}`,
       html: `

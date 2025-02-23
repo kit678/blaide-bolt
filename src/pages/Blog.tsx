@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BlogCard } from '../components/BlogCard';
 import { BlogPost } from '../types/blog';
-import { db } from '../lib/firestore';
+import { db } from '../services/firestore.ts';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
 import { collection, getDocs } from 'firebase/firestore';
@@ -17,7 +17,20 @@ export function Blog() {
   const fetchPosts = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'blog_posts'));
-      const postsData = querySnapshot.docs.map(doc => doc.data());
+      const postsData = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          title: data.title,
+          excerpt: data.excerpt,
+          content: data.content,
+          image: data.image,
+          date: data.date.toDate(), // Assuming date is a Firestore Timestamp
+          readTime: data.readTime,
+          tags: data.tags,
+          author: data.author,
+        } as BlogPost;
+      });
       setPosts(postsData);
     } catch (error) {
       console.error('Error fetching posts:', error);

@@ -15,7 +15,7 @@
     },
     "allowImportingTsExtensions": true,
     "outDir": "dist",
-    "types": ["node"],
+    "types": ["node", "vite/client"],
     "declaration": true
   },
   "ts-node": {
@@ -23,10 +23,13 @@
     "experimentalSpecifierResolution": "node"
   },
   "include": [
+    // "vite.config.ts",
+    // "api/sendEmail.vercel.ts",
+    // "src/testServer.ts",
+    // "src/utils/env.ts",
+    // "src/vite-env.d.ts"
     "vite.config.ts",
-    "api/sendEmail.ts",
-    "src/testServer.ts",
-    "src/utils/env.ts",
-    "src/vite-env.d.ts"
+    "api/**/*.ts",
+    "src/**/*"
   ]
 }

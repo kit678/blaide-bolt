@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { BlogPost } from '../types/blog';
 import { blogPosts } from '../data/blogPosts';
 import { Plus, Edit, Trash, Save, Mail, Check } from 'lucide-react';
-import { db } from '../lib/firestore';
+import { db } from '../services/firestore.ts';
 import { collection, getDocs, updateDoc, doc, addDoc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 
@@ -35,7 +35,18 @@ export function Admin() {
   const fetchMessages = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'contact_messages'));
-      const messagesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const messagesData = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          name: data.name,
+          email: data.email,
+          message: data.message,
+          division: data.division,
+          created_at: data.created_at.toDate(),
+          is_read: data.is_read,
+        } as ContactMessage;
+      });
       setMessages(messagesData);
     } catch (error) {
       toast.error('Failed to load messages');

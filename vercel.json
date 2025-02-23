@@ -3,5 +3,10 @@
     "env": {
       "NODE_ENV": "development"
     }
+  },
+  "functions": {
+    "api/sendEmail.vercel.ts": {
+      "runtime": "nodejs18.x"
+    }
   }
 } 

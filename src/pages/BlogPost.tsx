@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ArrowLeft, Clock, Tag } from 'lucide-react';
 import { BlogPost as BlogPostType } from '../types/blog';
-import { db } from '../lib/firestore';
+import { db } from '../services/firestore.ts';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
@@ -29,7 +29,18 @@ export function BlogPost() {
         throw new Error('Post not found');
       }
 
-      const postData = querySnapshot.docs[0].data();
+      const data = querySnapshot.docs[0].data();
+      const postData = {
+        id: querySnapshot.docs[0].id,
+        title: data.title,
+        excerpt: data.excerpt,
+        content: data.content,
+        image: data.image,
+        date: data.date.toDate(), // Assuming date is a Firestore Timestamp
+        readTime: data.readTime,
+        tags: data.tags,
+        author: data.author,
+      } as BlogPostType;
       setPost(postData);
     } catch (error) {
       console.error('Error fetching post:', error);
