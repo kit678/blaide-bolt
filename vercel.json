@@ -6,7 +6,7 @@
       "use": "@vercel/node"
     },
     {
-      "src": "dist/index.html",
+      "src": "dist/**",
       "use": "@vercel/static"
     }
   ],
@@ -25,10 +25,10 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/dist/index.html"
     }
   ],
   "env": {
     "NODE_ENV": "production"
   }
-} 
+}
