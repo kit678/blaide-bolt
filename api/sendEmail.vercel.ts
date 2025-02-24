@@ -1,6 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
-import { getEnvironmentConfig } from '../src/config/environment.ts';
 
 type EmailRequestBody = {
   to: string;
@@ -24,11 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     VITE_ADMIN_EMAIL: process.env.VITE_ADMIN_EMAIL
   });
 
-  const config = getEnvironmentConfig();
-  console.log('Configuration:', config);
-
-  const apiKey = config.emailService.resendApiKey;
-
+  const apiKey = process.env.VITE_RESEND_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: 'Resend API key not configured' });
   }
@@ -40,10 +35,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Skip Firestore update in Vercel environment
     console.log('Skipping Firestore update in Vercel environment');
 
+    const fromAddress = process.env.VITE_CONTACT_EMAIL || 'noreply@example.com';
+    const adminAddress = process.env.VITE_ADMIN_EMAIL || 'admin@example.com';
+
     // Send email to admin
     const { data: adminEmailData, error: adminEmailError } = await resend.emails.send({
-      from: config.emailService.from,
-      to: config.emailService.adminEmail,
+      from: fromAddress,
+      to: adminAddress,
       reply_to: body.from_email,
       subject: `New Contact Form Submission: ${body.subject}`,
       html: `
@@ -64,7 +62,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Send confirmation email to user
     const { error: userEmailError } = await resend.emails.send({
-      from: config.emailService.from,
+      from: fromAddress,
       to: body.from_email,
       subject: 'Thank you for contacting Blaide',
       html: `
