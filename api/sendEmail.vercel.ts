@@ -17,7 +17,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
+  // Log environment variables
+  console.log('Environment Variables:', {
+    VITE_RESEND_API_KEY: process.env.VITE_RESEND_API_KEY,
+    VITE_CONTACT_EMAIL: process.env.VITE_CONTACT_EMAIL,
+    VITE_ADMIN_EMAIL: process.env.VITE_ADMIN_EMAIL
+  });
+
   const config = getEnvironmentConfig();
+  console.log('Configuration:', config);
+
   const apiKey = config.emailService.resendApiKey;
 
   if (!apiKey) {
