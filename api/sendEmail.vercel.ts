@@ -13,6 +13,10 @@ type EmailRequestBody = {
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
+
   const config = getEnvironmentConfig();
   const apiKey = config.emailService.resendApiKey;
 
@@ -69,7 +73,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(200).json({ success: true, id: adminEmailData?.id });
   } catch (error) {
-    console.error('Server error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error('Error sending email:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 }
