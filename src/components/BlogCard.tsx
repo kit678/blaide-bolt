@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { Clock, Tag } from 'lucide-react';
-import { BlogPost } from '../types/blog';
+import { BlogPost } from '../types/blog.js';
 import { Link } from 'react-router-dom';
 
 interface BlogCardProps {
@@ -29,7 +29,7 @@ export function BlogCard({ post }: BlogCardProps) {
           <h3 className="text-xl font-bold mb-2 text-white">{post.title}</h3>
           <p className="text-gray-300 mb-4">{post.excerpt}</p>
           <div className="flex items-center gap-2 flex-wrap">
-            {post.tags.map(tag => (
+            {post.tags.map((tag: string) => (
               <span 
                 key={tag}
                 className="inline-flex items-center gap-1 px-2 py-1 bg-gray-700/50 rounded-full text-sm text-gray-300"

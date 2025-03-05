@@ -10,20 +10,21 @@
     "preview": "vite preview",
     "migrate": "supabase db push",
     "server": "tsx src/testServer.ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --jsx react-jsx --noEmit"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",
     "date-fns": "^3.3.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "firebase": "^11.3.1",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-fast-accordion": "^2.0.10",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.22.3",
-    "resend": "^2.0.0",
-    "firebase": "^11.3.1"
+    "resend": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
@@ -32,6 +33,7 @@
     "@types/node": "^22.13.4",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
+    "@types/react-helmet": "^6.1.11",
     "@vercel/node": "^5.1.7",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.18",
@@ -41,8 +43,14 @@
     "eslint": "^9.9.1",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.11",
+    "framer-motion": "^12.4.7",
     "globals": "^15.9.0",
     "postcss": "^8.4.35",
+    "react-accessible-accordion": "^5.0.0",
+    "react-helmet": "^6.1.0",
+    "react-masonry-css": "^1.0.16",
+    "react-spring": "^9.7.5",
+    "simplebar-react": "^3.3.0",
     "supabase": "^1.145.4",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",

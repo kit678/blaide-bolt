@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { getEnvironmentConfig } from './environment';
+import { getEnvironmentConfig } from './environment.js';
 dotenv.config();
 
 const config = getEnvironmentConfig();

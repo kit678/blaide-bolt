@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { BlogPost } from '../types/blog';
-import { blogPosts } from '../data/blogPosts';
+import { BlogPost } from '../types/blog.js';
+import { blogPosts } from '../data/blogPosts.js';
 import { Plus, Edit, Trash, Save, Mail, Check } from 'lucide-react';
-import { db } from '../services/firestore.ts';
+import { db } from '../services/firestore.js';
 import { collection, getDocs, updateDoc, doc, addDoc } from 'firebase/firestore';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 interface ContactMessage {
   id: string;

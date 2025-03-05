@@ -16,7 +16,8 @@
     "allowImportingTsExtensions": true,
     "outDir": "dist",
     "types": ["node", "vite/client"],
-    "declaration": true
+    "declaration": true,
+    "jsx": "react-jsx"
   },
   "ts-node": {
     "esm": true,

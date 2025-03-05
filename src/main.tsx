@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import App from './App.js';
 import { registerSW } from 'virtual:pwa-register';
 import './index.css';
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { getMode } from './utils/env';
+import { ErrorBoundary } from './components/ErrorBoundary.js';
+import { getMode } from './utils/env.js';
 
 // Service worker registration with proper configuration
 if ('serviceWorker' in navigator && getMode() === 'production') {

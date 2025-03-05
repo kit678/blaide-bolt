@@ -1,7 +1,6 @@
-
 import { X } from 'lucide-react';
-import { Division } from '../types/division';
-import { ImageCarousel } from './ImageCarousel';
+import { Division } from '../types/division.js';
+import { ImageCarousel } from './ImageCarousel.js';
 
 interface DivisionModalProps {
   division: Division;
@@ -33,7 +32,7 @@ export function DivisionModal({ division, onClose }: DivisionModalProps) {
             <div className="space-y-2">
               <h3 className="text-lg font-semibold text-white">Key Features</h3>
               <ul className="list-disc list-inside text-gray-300 space-y-1">
-                {division.features.map((feature, index) => (
+                {division.features.map((feature: string, index: number) => (
                   <li key={index}>{feature}</li>
                 ))}
               </ul>

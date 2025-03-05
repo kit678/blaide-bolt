@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ArrowLeft, Clock, Tag } from 'lucide-react';
-import { BlogPost as BlogPostType } from '../types/blog';
-import { db } from '../services/firestore.ts';
+import { BlogPost as BlogPostType } from '../types/blog.js';
+import { db } from '../services/firestore.js';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import toast from 'react-hot-toast';
+import { LoadingSpinner } from '../components/LoadingSpinner.js';
+import { toast } from 'react-hot-toast';
 
 export function BlogPost() {
   const { id } = useParams();
@@ -105,7 +105,7 @@ export function BlogPost() {
         <h1 className="text-4xl font-bold text-white mb-4">{post.title}</h1>
         
         <div className="flex items-center gap-2 mb-8">
-          {post.tags.map(tag => (
+          {post.tags.map((tag: string) => (
             <span 
               key={tag}
               className="inline-flex items-center gap-1 px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300"
@@ -117,7 +117,7 @@ export function BlogPost() {
         </div>
 
         <div className="prose prose-invert max-w-none">
-          {post.content.split('\n').map((paragraph, index) => (
+          {post.content.split('\n').map((paragraph: string, index: number) => (
             <p key={index} className="text-gray-300 mb-4">
               {paragraph.trim()}
             </p>

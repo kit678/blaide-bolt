@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { BlogCard } from '../components/BlogCard';
-import { BlogPost } from '../types/blog';
-import { db } from '../services/firestore.ts';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import toast from 'react-hot-toast';
+import { BlogCard } from '../components/BlogCard.js';
+import { BlogPost } from '../types/blog.js';
+import { db } from '../services/firestore.js';
+import { LoadingSpinner } from '../components/LoadingSpinner.js';
+import { toast } from 'react-hot-toast';
 import { collection, getDocs } from 'firebase/firestore';
 
 export function Blog() {
