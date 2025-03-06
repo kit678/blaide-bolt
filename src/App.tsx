@@ -1383,8 +1383,7 @@ function HomePage(): JSX.Element {
                   ${isDrawerOpen ? 'shadow-md' : 'shadow-lg'}
                 `}
                 style={{ 
-                  backgroundImage: `url(${division.name === 'Foundry' ? 
-                    '/images/innovation-hub.jpg' : division.backgroundImage})`,
+                  backgroundImage: `url(${division.backgroundImage})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   boxShadow: selectedDivision?.name === division.name && isDrawerOpen ? 

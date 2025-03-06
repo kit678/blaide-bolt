@@ -44,7 +44,10 @@ export default defineConfig(({ mode }) => {
       outDir: 'dist',
       rollupOptions: {
         output: {
-          format: 'esm'
+          format: 'esm',
+          entryFileNames(chunkInfo) {
+            return chunkInfo.name.includes('sw') ? '[name].js' : 'assets/[name]-[hash].js';
+          }
         }
       }
     },
@@ -62,24 +65,65 @@ export default defineConfig(({ mode }) => {
           display: 'standalone',
           icons: [
             {
-              src: 'pwa-192x192.png',
+              src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzRhOTBlMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik0xMiA1YTMgMyAwIDEgMC01Ljk5Ny4xMjVhNCA0IDAgMCAwLTIuNTI2IDUuNzdhNCA0IDAgMCAwIC41NTYgNi41ODhBNCA0IDAgMSAwIDEyIDE4WiIvPjxwYXRoIGQ9Ik0xMiA1YTMgMyAwIDEgMSA1Ljk5Ny4xMjVhNCA0IDAgMCAxIDIuNTI2IDUuNzdhNCA0IDAgMCAxLS41NTYgNi41ODhBNCA0IDAgMSAxIDEyIDE4WiIvPjxwYXRoIGQ9Ik0xNSAxM2E0LjUgNC41IDAgMCAxLTMtNGE0LjUgNC41IDAgMCAxLTMgNG04LjU5OS02LjVhMyAzIDAgMCAwIC4zOTktMS4zNzVtLTExLjk5NSAwQTMgMyAwIDAgMCA2LjQwMSA2LjVtLTIuOTI0IDQuMzk2YTQgNCAwIDAgMSAuNTg1LS4zOTZtMTUuODc2IDBhNCA0IDAgMCAxIC41ODUuMzk2TTYgMThhNCA0IDAgMCAxLTEuOTY3LS41MTZtMTUuOTM0IDBBNCA0IDAgMCAxIDE4IDE4Ii8+PC9nPjwvc3ZnPg==',
               sizes: '192x192',
-              type: 'image/png',
+              type: 'image/svg+xml',
+              purpose: 'any maskable'
             },
             {
-              src: 'pwa-512x512.png',
+              src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzRhOTBlMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik0xMiA1YTMgMyAwIDEgMC01Ljk5Ny4xMjVhNCA0IDAgMCAwLTIuNTI2IDUuNzdhNCA0IDAgMCAwIC41NTYgNi41ODhBNCA0IDAgMSAwIDEyIDE4WiIvPjxwYXRoIGQ9Ik0xMiA1YTMgMyAwIDEgMSA1Ljk5Ny4xMjVhNCA0IDAgMCAxIDIuNTI2IDUuNzdhNCA0IDAgMCAxLS41NTYgNi41ODhBNCA0IDAgMSAxIDEyIDE4WiIvPjxwYXRoIGQ9Ik0xNSAxM2E0LjUgNC41IDAgMCAxLTMtNGE0LjUgNC41IDAgMCAxLTMgNG04LjU5OS02LjVhMyAzIDAgMCAwIC4zOTktMS4zNzVtLTExLjk5NSAwQTMgMyAwIDAgMCA2LjQwMSA2LjVtLTIuOTI0IDQuMzk2YTQgNCAwIDAgMSAuNTg1LS4zOTZtMTUuODc2IDBhNCA0IDAgMCAxIC41ODUuMzk2TTYgMThhNCA0IDAgMCAxLTEuOTY3LS41MTZtMTUuOTM0IDBBNCA0IDAgMCAxIDE4IDE4Ii8+PC9nPjwvc3ZnPg==',
               sizes: '512x512',
-              type: 'image/png',
+              type: 'image/svg+xml',
+              purpose: 'any maskable'
             },
           ],
         },
+        strategies: 'generateSW',
         workbox: {
           globDirectory: 'dist',
           globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-          swDest: 'dist/sw.js',
           clientsClaim: true,
           skipWaiting: true,
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'google-fonts-cache',
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 365
+                },
+                cacheableResponse: {
+                  statuses: [0, 200]
+                }
+              }
+            },
+            {
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'images-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24 * 30
+                }
+              }
+            },
+            {
+              urlPattern: /\.(?:js|css)$/i,
+              handler: 'StaleWhileRevalidate',
+              options: {
+                cacheName: 'static-resources'
+              }
+            }
+          ]
         },
+        devOptions: {
+          enabled: true,
+          type: 'module',
+          navigateFallback: 'index.html'
+        }
       }),
       {
         name: 'configure-server',

@@ -5,10 +5,19 @@ self.__WB_MANIFEST;
 
 console.log('Custom service worker loaded');
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(self.skipWaiting());
+// Add explicit type declaration to avoid module processing issues
+/** @type {ServiceWorkerGlobalScope} */ 
+const sw = self;
+
+sw.addEventListener('install', (event) => {
+  event.waitUntil(sw.skipWaiting());
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+sw.addEventListener('activate', (event) => {
+  event.waitUntil(sw.clients.claim());
+});
+
+// Add error handling for any potential issues
+sw.addEventListener('error', (event) => {
+  console.error('Service worker error:', event.message);
 });
