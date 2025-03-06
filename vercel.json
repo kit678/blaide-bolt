@@ -3,13 +3,8 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "routes": [
-    {
-      "src": "/api/sendEmail",
-      "dest": "/api/sendEmail.vercel.ts"
-    }
-  ],
   "rewrites": [
+    { "source": "/api/sendEmail", "destination": "/api/sendEmail.vercel.ts" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
