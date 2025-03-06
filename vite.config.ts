@@ -9,6 +9,8 @@ import type { NextFunction } from 'express';
 import { POST as sendEmailPOST } from './src/api/sendEmail.local.ts';
 import dotenv from 'dotenv';
 import { getEnvironmentConfig } from './src/config/environment.ts';
+import fs from 'fs';
+import path from 'path';
 
 export default defineConfig(({ mode }) => {
   if (mode === 'production') {
@@ -47,6 +49,12 @@ export default defineConfig(({ mode }) => {
           format: 'esm',
           entryFileNames(chunkInfo) {
             return chunkInfo.name.includes('sw') ? '[name].js' : 'assets/[name]-[hash].js';
+          },
+          banner(chunk) {
+            if (chunk.fileName === 'sw.js') {
+              return '//# sourceType=script';
+            }
+            return '';
           }
         }
       }
@@ -55,6 +63,7 @@ export default defineConfig(({ mode }) => {
       react(),
       VitePWA({
         registerType: 'autoUpdate',
+        injectRegister: null,
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
         manifest: {
           name: 'Blaide - AI-Driven Innovation',
@@ -129,6 +138,29 @@ export default defineConfig(({ mode }) => {
         name: 'configure-server',
         configureServer(server: ViteDevServer) {
           server.middlewares.use('/api', apiServer);
+        }
+      },
+      {
+        name: 'fix-sw-type',
+        enforce: 'post',
+        apply: 'build',
+        closeBundle: async () => {
+          try {
+            const swPath = path.resolve(__dirname, 'dist', 'sw.js');
+            
+            if (fs.existsSync(swPath)) {
+              let swContent = fs.readFileSync(swPath, 'utf8');
+              
+              if (!swContent.includes('//# sourceType=script')) {
+                swContent = '//# sourceType=script\n' + swContent;
+              }
+              
+              fs.writeFileSync(swPath, swContent);
+              console.log('✓ Service Worker fixed to use classic script type');
+            }
+          } catch (error) {
+            console.error('Error fixing service worker script type:', error);
+          }
         }
       }
     ],

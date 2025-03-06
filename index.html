@@ -67,6 +67,28 @@
           }
       }
     </style>
+    <!-- Custom service worker registration script -->
+    <script type="text/javascript">
+      // Use window.onload to ensure the DOM is fully loaded
+      window.onload = function() {
+        // Check if service workers are supported
+        if ('serviceWorker' in navigator) {
+          // Use a timeout to delay registration slightly
+          setTimeout(() => {
+            navigator.serviceWorker.register('/sw.js', { 
+              type: 'classic', // Explicitly set as classic script
+              scope: '/'
+            })
+            .then(function(registration) {
+              console.log('SW registered: ', registration);
+            })
+            .catch(function(error) {
+              console.error('Service worker registration failed:', error);
+            });
+          }, 1000);
+        }
+      };
+    </script>
   </head>
   <body>
     <div id="root"></div>
