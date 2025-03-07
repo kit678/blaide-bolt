@@ -1,32 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.js';
-import { registerSW } from 'virtual:pwa-register';
+import App from './App.tsx';
 import './index.css';
-import { ErrorBoundary } from './components/ErrorBoundary.js';
-import { getMode } from './utils/env.js';
+import { registerServiceWorker } from './registerSW.ts';
 
-// Service worker registration with proper configuration
-if ('serviceWorker' in navigator && getMode() === 'production') {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js', {
-      scope: '/',
-      type: 'module' // Must match workbox mode
-    }).then(registration => {
-      console.log('SW registered:', registration);
-    }).catch(error => {
-      console.error('SW registration failed:', error);
-    });
-  });
-}
+// Register service worker
+registerServiceWorker();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </React.StrictMode>
+    <App />
+  </React.StrictMode>,
 );
-
-// Register the Service Worker
-registerSW();
