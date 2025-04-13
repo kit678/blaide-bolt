@@ -2,10 +2,17 @@
 // This provides a simpler approach than the PWA plugin
 
 export function registerServiceWorker(): void {
+  // In development mode, we'll skip service worker registration
+  // to avoid MIME type errors and unnecessary complications
+  if (import.meta.env.DEV) {
+    console.log('Service worker registration skipped in development mode');
+    return;
+  }
+  
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      // Different approach for dev vs production
-      const swPath = import.meta.env.DEV ? '/dev-sw.js' : '/sw.js';
+      // Only use sw.js in production
+      const swPath = '/sw.js';
       
       navigator.serviceWorker.register(swPath)
         .then(registration => {

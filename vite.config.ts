@@ -47,6 +47,15 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           format: 'esm',
+          entryFileNames(chunkInfo) {
+            return chunkInfo.name.includes('sw') ? '[name].js' : 'assets/[name]-[hash].js';
+          },
+          banner(chunk) {
+            if (chunk.fileName === 'sw.js') {
+              return '//# sourceType=script';
+            }
+            return '';
+          }
         }
       }
     },
@@ -56,16 +65,37 @@ export default defineConfig(({ mode }) => {
       {
         name: 'configure-server',
         configureServer(server: ViteDevServer) {
+          // Use middleware to serve API routes
           server.middlewares.use('/api', apiServer);
+          
+          // Add middleware to serve service worker files with correct MIME type
+          server.middlewares.use((req, res, next) => {
+            if (req.url === '/dev-sw.js' || req.url === '/sw.js') {
+              const swPath = req.url === '/dev-sw.js' 
+                ? path.resolve(__dirname, 'public/dev-sw.js')
+                : path.resolve(__dirname, 'public/simple-sw.js');
+                
+              try {
+                const content = fs.readFileSync(swPath, 'utf-8');
+                res.setHeader('Content-Type', 'application/javascript');
+                res.end(content);
+              } catch (error) {
+                console.error(`Error serving service worker: ${error}`);
+                next();
+              }
+            } else {
+              next();
+            }
+          });
         }
       },
-      // Custom plugin to copy the service worker on build
+      // Only in production: copy service worker file
       {
         name: 'copy-sw',
         apply: 'build',
         closeBundle() {
           try {
-            // Copy the simplified service worker to the dist folder
+            // Copy the service worker to the dist folder
             fs.copyFileSync(
               path.resolve(__dirname, 'public/simple-sw.js'),
               path.resolve(__dirname, 'dist/sw.js')

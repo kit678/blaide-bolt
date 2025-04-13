@@ -9,3 +9,15 @@
 body {
   @apply antialiased;
 }
+
+/* Add smooth scrolling to the entire page */
+html {
+  scroll-behavior: smooth;
+  /* This enables smooth scrolling for anchor links */
+}
+
+/* Optional: Adjust scroll padding to account for sticky header */
+html {
+  scroll-padding-top: 5rem; 
+  /* Adjust this value based on your navbar height */
+}

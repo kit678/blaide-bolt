@@ -1,6 +1,13 @@
-// A minimal, reliable service worker
-// No dependencies on Workbox or other libraries
+//# sourceType=script
+// Simple service worker for production use
+console.log('Service worker loaded - Production version');
+
+// Cache name constants
 const CACHE_NAME = 'blaide-cache-v1';
+const STATIC_CACHE_NAME = 'blaide-static-v1';
+const IMAGE_CACHE_NAME = 'blaide-images-v1';
+
+// Resources to pre-cache
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -13,9 +20,9 @@ self.addEventListener('install', (event) => {
   console.log('[Service Worker] Installing...');
   self.skipWaiting();
   
-  // Only cache core assets - nothing fancy
+  // Cache core assets
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
+    caches.open(STATIC_CACHE_NAME).then((cache) => {
       return cache.addAll(STATIC_ASSETS);
     })
   );
@@ -29,9 +36,10 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.map((name) => {
-          if (name !== CACHE_NAME) {
-            return caches.delete(name);
+        cacheNames.map((cacheName) => {
+          if (cacheName !== STATIC_CACHE_NAME && 
+              cacheName !== IMAGE_CACHE_NAME) {
+            return caches.delete(cacheName);
           }
         })
       );
@@ -44,15 +52,11 @@ self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') return;
   
-  // Skip browser extensions and third-party requests
-  const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
-  
   // Simple network-first strategy
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Clone the response to store in cache
+        // Cache successful responses
         const responseClone = response.clone();
         caches.open(CACHE_NAME).then((cache) => {
           cache.put(event.request, responseClone);

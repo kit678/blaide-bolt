@@ -75,7 +75,10 @@
         if ('serviceWorker' in navigator) {
           // Use a timeout to delay registration slightly
           setTimeout(() => {
-            navigator.serviceWorker.register('/sw.js', { 
+            // Choose the right service worker based on environment
+            const swPath = window.location.hostname === 'localhost' ? '/dev-sw.js' : '/sw.js';
+            
+            navigator.serviceWorker.register(swPath, { 
               type: 'classic', // Explicitly set as classic script
               scope: '/'
             })
